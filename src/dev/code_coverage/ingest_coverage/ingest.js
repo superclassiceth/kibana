@@ -20,7 +20,7 @@
 const { Client } = require('@elastic/elasticsearch');
 import { createFailError } from '@kbn/dev-utils';
 import chalk from 'chalk';
-import { green, always } from './utils';
+import { green, always, noop, pretty } from './utils';
 import { fromNullable } from './either';
 import { COVERAGE_INDEX, TOTALS_INDEX } from './constants';
 
@@ -32,6 +32,7 @@ const indexName = body => (body.isTotal ? TOTALS_INDEX : COVERAGE_INDEX);
 
 export const ingest = log => async body => {
   const index = indexName(body);
+  process.env.JSON_OUT ? log.info(pretty(body)) : noop;
 
   if (process.env.NODE_ENV === 'integration_test') {
     log.debug(`### Just Logging, ${green('NOT actually sending')} to [${green(index)}]`);
@@ -97,7 +98,4 @@ function color(whichColor) {
   return function colorInner(x) {
     return chalk[whichColor].bgWhiteBright(x);
   };
-}
-function pretty(x) {
-  return JSON.stringify(x, null, 2);
 }
