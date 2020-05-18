@@ -32,7 +32,6 @@ const indexName = body => (body.isTotal ? TOTALS_INDEX : COVERAGE_INDEX);
 
 export const ingest = log => async body => {
   const index = indexName(body);
-  process.env.JSON_OUT ? log.info(pretty(body)) : noop;
 
   if (process.env.NODE_ENV === 'integration_test') {
     log.debug(`### Just Logging, ${green('NOT actually sending')} to [${green(index)}]`);
